@@ -6,15 +6,26 @@ function App() {
   const [comments, setComments] = useState(initialComments);
   const [clickedReply, setClickedReply] = useState(false);
   const [clickedDelete, setClickedDelete] = useState(false);
-
   const [clickedId, setClickedId] = useState(null);
+  function handleCancel() {
+    setClickedDelete(false);
+  }
+  function handleDelete() {
+    comments.forEach((comment) => {
+      if (comment.replies.length !== 0)
+        comment.replies = comment.replies.filter(
+          (reply) => reply.id !== clickedId
+        );
+    });
+    setComments(comments.filter((comment) => comment.id !== clickedId));
+    setClickedDelete(false);
+  }
+
   return (
     <>
       {clickedDelete && (
-        <div
-          className="delete-panel-container"
-          // onClick={() => setClickedDelete(false)}
-        >
+        <div className="delete-panel-container">
+          <div className="delete-bg" onClick={handleCancel}></div>
           <div className="delete-panel">
             <h3>Delete comment</h3>
             <p className="delete-text">
@@ -22,55 +33,71 @@ function App() {
               comment and can't be undone.
             </p>
             <div className="delete-panel-btns ">
-              <button className="CANCEL-btn btn">Cancel</button>
-              <button className="DELETE-btn btn">Delete</button>
+              <button className="CANCEL-btn btn" onClick={handleCancel}>
+                Cancel
+              </button>
+              <button className="DELETE-btn btn" onClick={handleDelete}>
+                Delete
+              </button>
             </div>
           </div>
         </div>
       )}
       <div>
         <div className="comments">
-          {comments.map((comment) => (
-            <div id={comment.id} key={comment.id} className="container">
-              <Comment
-                currentUser={currentUser}
-                id={comment.id}
-                comment={comment}
-                reply={false}
-                onSetClickedReply={setClickedReply}
-                onSetClickedId={setClickedId}
-                setClickedDelete={setClickedDelete}
-                clickedReply={clickedReply}
-              />
-              {clickedReply && clickedId === comment.id && (
-                <TextSender
-                  btnText="Reply"
+          {comments
+            .sort((b, a) => a.score - b.score)
+            .map((comment) => (
+              <div id={comment.id} key={comment.id} className="container">
+                <Comment
+                  currentUser={currentUser}
                   id={comment.id}
-                  src={currentUser.image.png}
+                  key={comment.id}
                   comment={comment}
+                  reply={false}
+                  onSetClickedReply={setClickedReply}
+                  onSetClickedId={setClickedId}
+                  onSetClickedDelete={setClickedDelete}
                   comments={comments}
                   onSetComments={setComments}
-                  reply={true}
-                  currentUser={currentUser}
-                  clickedReply={clickedReply}
-                  onSetClickedReply={setClickedReply}
                 />
-              )}
+                {clickedReply && clickedId === comment.id && (
+                  <TextSender
+                    btnText="Reply"
+                    id={comment.id}
+                    src={currentUser.image.png}
+                    comment={comment}
+                    comments={comments}
+                    onSetComments={setComments}
+                    reply={true}
+                    currentUser={currentUser}
+                    clickedReply={clickedReply}
+                    onSetClickedReply={setClickedReply}
+                  />
+                )}
 
-              {comment.replies && (
-                <div className="replies">
-                  {comment.replies.map((reply) => (
-                    <Comment
-                      key={reply.id}
-                      currentUser={currentUser}
-                      comment={reply}
-                      reply={true}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                {comment.replies && (
+                  <div className="replies">
+                    {comment.replies
+                      .sort((b, a) => a.score - b.score)
+                      .map((reply) => (
+                        <Comment
+                          key={reply.id}
+                          currentUser={currentUser}
+                          id={reply.id}
+                          comments={comments}
+                          onSetComments={setComments}
+                          comment={reply}
+                          reply={true}
+                          onSetClickedReply={setClickedReply}
+                          onSetClickedId={setClickedId}
+                          onSetClickedDelete={setClickedDelete}
+                        />
+                      ))}
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
         <TextSender
           btnText="send"
@@ -87,7 +114,6 @@ function App() {
 function TextSender({
   reply = false,
   btnText,
-  id,
   src,
   comments,
   comment,
@@ -156,12 +182,13 @@ function TextSender({
 }
 function Comment({
   comment,
+  comments,
+  setComments,
   currentUser,
   reply,
   onSetClickedReply,
   onSetClickedId,
-  setClickedDelete,
-  clickedReply,
+  onSetClickedDelete,
 }) {
   const [score, setScore] = useState(comment.score);
   const [clickedEdit, setClickedEdit] = useState(false);
@@ -186,6 +213,10 @@ function Comment({
   }
   function handleReply() {
     onSetClickedReply(true);
+    onSetClickedId(comment.id);
+  }
+  function handleDelete() {
+    onSetClickedDelete(true);
     onSetClickedId(comment.id);
   }
   return (
@@ -217,10 +248,7 @@ function Comment({
             <div className="btns">
               {comment.user.username === currentUser.username && (
                 <>
-                  <div
-                    className="btn delete-btn"
-                    onClick={() => setClickedDelete(true)}
-                  >
+                  <div className="btn delete-btn" onClick={handleDelete}>
                     <img alt="delete-icon" src="./images/icon-delete.svg"></img>
                     <p>delete</p>
                   </div>
