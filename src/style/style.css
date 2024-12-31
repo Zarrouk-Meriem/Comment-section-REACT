@@ -101,7 +101,6 @@ body {
 
 .add-comment {
   width: 100%;
-  margin-bottom: 2rem;
 }
 .add-comment .user-comment {
   border-radius: 1rem;
@@ -113,7 +112,6 @@ body {
   justify-content: space-between;
   align-items: start;
   gap: 1rem;
-  margin-bottom: 2rem;
 }
 .add-comment .user-comment textarea {
   width: 100%;
@@ -158,7 +156,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
   width: 100%;
 }
 .container .replies {
@@ -249,6 +247,15 @@ body {
   cursor: pointer;
   color: hsl(228, 45%, 44%);
   font-weight: 600;
+}
+.comment .comment-container form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-end;
+}
+.comment .comment-container form textarea {
+  width: -webkit-fill-available;
 }
 
 .hidden-you {
@@ -341,7 +348,7 @@ ion-icon:active {
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  width: 20%;
+  width: 17%;
 }
 .delete-panel h3 {
   font-size: 25px;
@@ -352,13 +359,17 @@ ion-icon:active {
   color: hsl(211, 10%, 45%);
   font-size: 18px;
   line-height: 1.5rem;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 .delete-panel .CANCEL-btn {
-  background-color: hsl(212, 24%, 26%);
+  text-transform: uppercase;
+  background-color: hsl(211, 10%, 45%);
   margin-right: 0.7rem;
+  width: 50%;
 }
 .delete-panel .DELETE-btn {
+  width: 50%;
+  text-transform: uppercase;
   background-color: hsl(358, 79%, 66%);
 }
 .delete-panel .DELETE-btn:hover,
@@ -366,6 +377,7 @@ ion-icon:active {
   background-color: hsl(357, 100%, 86%);
 }
 .delete-panel .delete-panel-btns {
+  width: 100%;
   align-self: center;
   display: flex;
 }
@@ -377,7 +389,7 @@ ion-icon:active {
   font-weight: 500;
   font-size: 16px;
   padding: 1rem 2rem;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   color: white;
 }
 
@@ -385,6 +397,7 @@ ion-icon:active {
   background-color: rgba(50, 65, 82, 0.5333333333);
   width: 100%;
   height: 100%;
+  overflow: -moz-hidden-unscrollable;
   position: absolute;
   display: flex;
   justify-content: center;
@@ -392,6 +405,7 @@ ion-icon:active {
 }
 
 .update-btn {
+  text-transform: uppercase;
   align-self: flex-end;
   cursor: pointer;
   background: none;
