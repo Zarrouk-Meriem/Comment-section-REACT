@@ -17,7 +17,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 90%;
 }
 
 .add-comment {
@@ -443,6 +442,9 @@ ion-icon:active {
     position: absolute;
     bottom: 1rem;
     right: 1rem;
+  }
+  .flex {
+    width: 90%;
   }
 }
 .flex {

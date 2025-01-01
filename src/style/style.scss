@@ -29,7 +29,6 @@ $--bs-body-bg: #fff;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 90%;
 }
 @mixin comment {
   border-radius: 1rem;
@@ -442,6 +441,9 @@ ion-icon:active {
     position: absolute;
     bottom: 1rem;
     right: 1rem;
+  }
+  .flex {
+    width: 90%;
   }
 }
 .flex {
