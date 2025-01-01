@@ -472,7 +472,9 @@ ion-icon:active {
     flex-direction: column-reverse;
 
     gap: 0.5rem;
-    width: 100%;
+    .btn {
+      width: 100%;
+    }
   }
   .CANCEL-btn {
     margin-right: 0 !important;

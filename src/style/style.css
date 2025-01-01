@@ -473,6 +473,8 @@ ion-icon:active {
   .delete-panel-btns {
     flex-direction: column-reverse;
     gap: 0.5rem;
+  }
+  .delete-panel-btns .btn {
     width: 100%;
   }
   .CANCEL-btn {
