@@ -1,5 +1,6 @@
 import { useState } from "react";
 import data from "./data.json";
+
 function App() {
   const currentUser = data.currentUser;
   const initialComments = data.comments;
@@ -7,17 +8,21 @@ function App() {
   const [clickedReply, setClickedReply] = useState(false);
   const [clickedDelete, setClickedDelete] = useState(false);
   const [clickedId, setClickedId] = useState(null);
+
   function handleCancel() {
     setClickedDelete(false);
   }
+
   function handleDelete() {
-    comments.forEach((comment) => {
-      if (comment.replies.length !== 0)
+    const updatedComments = comments.filter((comment) => {
+      if (comment.replies.length !== 0) {
         comment.replies = comment.replies.filter(
           (reply) => reply.id !== clickedId
         );
+      }
+      return comment.id !== clickedId;
     });
-    setComments(comments.filter((comment) => comment.id !== clickedId));
+    setComments(updatedComments);
     setClickedDelete(false);
   }
 
@@ -32,7 +37,7 @@ function App() {
               Are you sure you want to delete this comment? This will remove the
               comment and can't be undone.
             </p>
-            <div className="delete-panel-btns ">
+            <div className="delete-panel-btns">
               <button className="CANCEL-btn btn" onClick={handleCancel}>
                 Cancel
               </button>
@@ -47,19 +52,20 @@ function App() {
         <div className="comments">
           {comments
             .sort((b, a) => a.score - b.score)
-            .map((comment) => (
+            .map((comment, i) => (
               <div id={comment.id} key={comment.id} className="container">
                 <Comment
                   currentUser={currentUser}
+                  i={i}
                   id={comment.id}
                   key={comment.id}
                   comment={comment}
+                  comments={comments}
+                  onSetComments={setComments}
                   reply={false}
                   onSetClickedReply={setClickedReply}
                   onSetClickedId={setClickedId}
                   onSetClickedDelete={setClickedDelete}
-                  comments={comments}
-                  onSetComments={setComments}
                 />
                 {clickedReply && clickedId === comment.id && (
                   <TextSender
@@ -80,8 +86,9 @@ function App() {
                   <div className="replies">
                     {comment.replies
                       .sort((b, a) => a.score - b.score)
-                      .map((reply) => (
+                      .map((reply, replyIndex) => (
                         <Comment
+                          i={i}
                           key={reply.id}
                           currentUser={currentUser}
                           id={reply.id}
@@ -89,6 +96,7 @@ function App() {
                           onSetComments={setComments}
                           comment={reply}
                           reply={true}
+                          replyIndex={replyIndex}
                           onSetClickedReply={setClickedReply}
                           onSetClickedId={setClickedId}
                           onSetClickedDelete={setClickedDelete}
@@ -100,7 +108,7 @@ function App() {
             ))}
         </div>
         <TextSender
-          btnText="send"
+          btnText="Send"
           id={currentUser.id}
           src={currentUser.image.png}
           comments={comments}
@@ -111,6 +119,7 @@ function App() {
     </>
   );
 }
+
 function TextSender({
   reply = false,
   btnText,
@@ -119,11 +128,11 @@ function TextSender({
   comment,
   onSetComments,
   currentUser,
-  marginBottom = "0",
   onSetClickedReply,
   clickedReply,
 }) {
   const [commentContent, setCommentContent] = useState("");
+
   function CommentsLength() {
     let length = comments.length;
     comments.forEach((comment) => {
@@ -131,167 +140,172 @@ function TextSender({
     });
     return length;
   }
+
   const addedComment = {
-    createdAt: "Now",
     id: CommentsLength() + 1,
     content: commentContent,
-    user: currentUser,
     score: 0,
+    createdAt: "Now",
+    user: currentUser,
     replies: [],
     replyingTo: comment?.user.username,
   };
+
   function handleSend(e) {
     e.preventDefault();
     if (commentContent) {
-      onSetComments([...comments, addedComment]);
+      const updatedComments = [...comments, addedComment];
+      updatedComments.sort((b, a) => a.score - b.score);
+      onSetComments(updatedComments);
       setCommentContent("");
     } else alert("Empty field!");
-    document.getElementById("textArea").focus();
   }
+
   function handleReply(e) {
     e.preventDefault();
     if (commentContent) {
       onSetClickedReply(!clickedReply);
       comment.replies.push(addedComment);
-      onSetComments(comments);
+      const updatedComments = [...comments];
+      updatedComments.sort((b, a) => a.score - b.score);
+      onSetComments(updatedComments);
       setCommentContent("");
     } else alert("Empty field!");
-    document.getElementById("textArea").focus();
   }
+
   return (
     <div className="add-comment">
       <form className="user-comment">
         <img alt="profile" src={src} />
         <textarea
-          id="textArea"
           placeholder="Add a Comment..."
           value={commentContent}
           onChange={(e) => setCommentContent(e.target.value)}
         ></textarea>
-        <button
-          className={`${btnText}-btn`}
-          onClick={(e) => {
-            reply ? handleReply(e) : handleSend(e);
-          }}
-        >
+        <button onClick={(e) => (reply ? handleReply(e) : handleSend(e))}>
           {btnText}
         </button>
       </form>
     </div>
   );
 }
+
 function Comment({
   comment,
+  i,
   comments,
-  setComments,
+  onSetComments,
   currentUser,
   reply,
+  replyIndex,
   onSetClickedReply,
   onSetClickedId,
   onSetClickedDelete,
 }) {
-  const [score, setScore] = useState(comment.score);
   const [clickedEdit, setClickedEdit] = useState(false);
-
-  const [textAreaContent, setTextAreaContent] = useState(` ${comment.content}`);
+  const [textAreaContent, setTextAreaContent] = useState(comment.content);
 
   function handleUpVote() {
-    setScore(score + 1);
+    const updatedComment = { ...comment, score: comment.score + 1 };
+    updateComments(updatedComment);
   }
+
   function handleDownVote() {
-    if (score > 0) setScore(score - 1);
+    const updatedComment = { ...comment, score: comment.score - 1 };
+    updateComments(updatedComment);
   }
+
+  function updateComments(updatedComment) {
+    const updatedComments = [...comments];
+    if (reply) {
+      updatedComments[i].replies[replyIndex] = updatedComment;
+      updatedComments[i].replies.sort((b, a) => a.score - b.score);
+    } else {
+      updatedComments[i] = updatedComment;
+    }
+    updatedComments.sort((b, a) => a.score - b.score);
+    onSetComments(updatedComments);
+  }
+
   function handleEdit() {
     setClickedEdit(true);
   }
+
   function handleUpdate() {
     if (textAreaContent) {
-      comment = { ...comment, content: textAreaContent };
-      setTextAreaContent(`${comment.content}`);
+      const updatedComment = { ...comment, content: textAreaContent };
+      updateComments(updatedComment);
       setClickedEdit(false);
     } else alert("Empty field!");
   }
+
   function handleReply() {
     onSetClickedReply(true);
     onSetClickedId(comment.id);
   }
+
   function handleDelete() {
     onSetClickedDelete(true);
     onSetClickedId(comment.id);
   }
+
   return (
-    <>
-      <div className="comment">
-        <div className="likes-container">
-          <ion-icon
-            className="btn"
-            name="add-outline"
-            onClick={handleUpVote}
-          ></ion-icon>
-          <p>{score}</p>
-          <ion-icon
-            className="btn"
-            name="remove-outline"
-            onClick={handleDownVote}
-          ></ion-icon>
-        </div>
-        <div className="comment-container">
-          <div className="comment-header">
-            <div className="contact-info">
-              <img alt="profile" src={comment.user.image.png} />
-              <p className="username">{comment.user.username}</p>
-              {comment.user.username === currentUser.username && (
-                <span className="hidden-you">You</span>
-              )}
-              <p className="date">{comment.createdAt}</p>
-            </div>
-            <div className="btns">
-              {comment.user.username === currentUser.username && (
-                <>
-                  <div className="btn delete-btn" onClick={handleDelete}>
-                    <img alt="delete-icon" src="./images/icon-delete.svg"></img>
-                    <p>delete</p>
-                  </div>
-                  <div className="btn edit-btn" onClick={handleEdit}>
-                    <img alt="edit-icon" src="./images/icon-edit.svg"></img>
-                    <p>Edit</p>
-                  </div>
-                </>
-              )}
-              {comment.user.username !== currentUser.username && (
-                <div
-                  style={
-                    reply ? { cursor: "not-allowed" } : { cursor: "pointer" }
-                  }
-                  className="btn reply-btn"
-                  onClick={handleReply}
-                >
-                  <img alt="reply-icon" src="./images/icon-reply.svg"></img>
-                  <p>Reply</p>
-                </div>
-              )}
-            </div>
-          </div>
-          {clickedEdit ? (
-            <>
-              <textarea
-                className="text-box-update"
-                value={textAreaContent}
-                onChange={(e) => setTextAreaContent(e.target.value)}
-              ></textarea>
-              <button className="btn update-btn" onClick={handleUpdate}>
-                Update
-              </button>
-            </>
-          ) : (
-            <div className="comment-description">
-              {reply && <span>@{comment.replyingTo} </span>}
-              {textAreaContent}
-            </div>
-          )}
-        </div>
+    <div className="comment">
+      <div className="likes-container">
+        <ion-icon name="add-outline" onClick={handleUpVote}></ion-icon>
+        <p>{comment.score}</p>
+        <ion-icon name="remove-outline" onClick={handleDownVote}></ion-icon>
       </div>
-    </>
+      <div className="comment-container">
+        <div className="comment-header">
+          <div className="contact-info">
+            <img alt="profile" src={comment.user.image.png} />
+            <p className="username">{comment.user.username}</p>
+            {comment.user.username === currentUser.username && (
+              <span className="hidden-you ">You</span>
+            )}
+            <p className="date">{comment.createdAt}</p>
+          </div>
+          <div className="btns">
+            {comment.user.username === currentUser.username && (
+              <>
+                <button className="btn delete-btn" onClick={handleDelete}>
+                  <img alt="delete icon" src="images/icon-delete.svg" />
+                  Delete
+                </button>
+                <button className="btn edit-btn" onClick={handleEdit}>
+                  <img alt="edit icon" src="images/icon-edit.svg" />
+                  Edit
+                </button>
+              </>
+            )}
+            {comment.user.username !== currentUser.username && (
+              <button className="btn reply-btn  " onClick={handleReply}>
+                <img alt="reply icon" src="images/icon-reply.svg"></img>
+                Reply
+              </button>
+            )}
+          </div>
+        </div>
+        {clickedEdit ? (
+          <form>
+            <textarea
+              className=""
+              value={textAreaContent}
+              onChange={(e) => setTextAreaContent(e.target.value)}
+            ></textarea>
+            <button className="update-btn" onClick={handleUpdate}>
+              Update
+            </button>
+          </form>
+        ) : (
+          <div className="comment-description">
+            <span>{reply && `@${comment.replyingTo} `}</span>
+            {comment.content}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
