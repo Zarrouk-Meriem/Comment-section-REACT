@@ -1,83 +1,3 @@
-@media (max-width: 37.9375em) {
-  .comment {
-    position: relative;
-    flex-direction: column;
-  }
-  .comment .comment-header {
-    flex-direction: column;
-  }
-  .comment .comment-header .btns {
-    align-self: flex-end;
-    position: absolute;
-    bottom: 1.6rem;
-    right: 1rem;
-    gap: 0 !important;
-  }
-  .comment .likes-container {
-    flex-direction: row;
-    align-items: center;
-    order: 1;
-    align-self: flex-start;
-    height: fit-content;
-    gap: 0.5rem;
-    margin: 0;
-    margin-top: 0.5rem;
-    padding: 0.7rem 0.5rem;
-  }
-  .user-comment {
-    flex-direction: column-reverse;
-    position: relative;
-  }
-  .user-comment textarea {
-    box-sizing: border-box;
-  }
-  .user-comment .send-btn {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-  }
-  .add-comment .user-comment button {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-  }
-}
-@media (max-width: 106.25em) {
-  .delete-panel {
-    width: 24%;
-  }
-}
-@media (max-width: 88.5625em) {
-  .delete-panel {
-    width: 30%;
-  }
-}
-@media (max-width: 70.8125em) {
-  .delete-panel {
-    width: 40%;
-  }
-}
-@media (max-width: 53.125em) {
-  .delete-panel {
-    width: 60%;
-  }
-  .delete-panel-btns {
-    flex-direction: column-reverse;
-    gap: 0.5rem;
-    width: 100%;
-  }
-  .CANCEL-btn {
-    margin-right: 0 !important;
-  }
-}
-@media (max-width: 23.43755em) {
-  .delete-panel {
-    gap: 1rem;
-  }
-  .delete-text {
-    display: none;
-  }
-}
 body {
   font-family: "Rubik", sans-serif;
   line-height: 1;
@@ -97,6 +17,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 90%;
 }
 
 .add-comment {
@@ -241,6 +162,7 @@ body {
   line-height: 1.4rem;
   letter-spacing: 0.03rem;
   font-weight: 400;
+  margin-bottom: 1rem;
 }
 .comment .comment-container .comment-description span {
   cursor: pointer;
@@ -476,4 +398,100 @@ ion-icon:active {
 }
 .horizontal-shaking {
   animation: horizontal-shaking 0.9s;
+}
+
+@media (max-width: 37.9375em) {
+  .comment {
+    position: relative;
+    flex-direction: column;
+  }
+  .comment .comment-header {
+    flex-direction: column;
+  }
+  .comment .comment-header .btns {
+    align-self: flex-end;
+    position: absolute;
+    bottom: 1.6rem;
+    right: 1rem;
+    gap: 10px !important;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .comment .likes-container {
+    flex-direction: row;
+    align-items: center;
+    order: 1;
+    height: fit-content;
+    gap: 0.5rem;
+    margin: 0;
+    margin-top: 0.5rem;
+    width: 4rem;
+  }
+  .user-comment {
+    flex-direction: column-reverse;
+    position: relative;
+  }
+  .user-comment textarea {
+    box-sizing: border-box;
+  }
+  .user-comment .send-btn {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .add-comment .user-comment button {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+}
+
+@media (max-width: 106.25em) {
+  .delete-panel {
+    width: 24%;
+  }
+}
+@media (max-width: 88.5625em) {
+  .delete-panel {
+    width: 30%;
+  }
+}
+@media (max-width: 70.8125em) {
+  .delete-panel {
+    width: 40%;
+  }
+}
+@media (max-width: 53.125em) {
+  .delete-panel {
+    width: 60%;
+  }
+  .delete-panel-btns {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .CANCEL-btn {
+    margin-right: 0 !important;
+  }
+  .date {
+    display: none;
+  }
+}
+@media (max-width: 23.43755em) {
+  .delete-panel {
+    gap: 1rem;
+  }
+  .delete-text {
+    display: none;
+  }
+  .container .replies {
+    margin-left: 1rem;
+    padding-left: 1.2rem;
+  }
 }

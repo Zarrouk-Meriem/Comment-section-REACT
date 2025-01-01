@@ -48,7 +48,7 @@ function App() {
           </div>
         </div>
       )}
-      <div>
+      <div className="flex">
         <div className="comments">
           {comments
             .sort((b, a) => a.score - b.score)
@@ -153,7 +153,7 @@ function TextSender({
 
   function handleSend(e) {
     e.preventDefault();
-    if (commentContent) {
+    if (commentContent && commentContent.trim().length !== 0) {
       const updatedComments = [...comments, addedComment];
       updatedComments.sort((b, a) => a.score - b.score);
       onSetComments(updatedComments);
@@ -163,7 +163,7 @@ function TextSender({
 
   function handleReply(e) {
     e.preventDefault();
-    if (commentContent) {
+    if (commentContent && commentContent.trim().length !== 0) {
       onSetClickedReply(!clickedReply);
       comment.replies.push(addedComment);
       const updatedComments = [...comments];
