@@ -26,11 +26,15 @@ function App() {
     setClickedDelete(false);
   }
   if (clickedDelete) {
+    document
+      .getElementsByClassName("delete-panel-container")[0]
+      ?.scrollIntoView();
     document.getElementById("root").classList.add("overflow-hidden");
     document
       .getElementsByClassName("delete-panel-container")[0]
       ?.classList.add("overflow-hidden");
-    console.log(document.getElementsByClassName("delete-panel-container"));
+  } else {
+    document.getElementById("root").classList.remove("overflow-hidden");
   }
 
   return (
