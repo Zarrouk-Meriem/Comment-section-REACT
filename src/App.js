@@ -25,6 +25,13 @@ function App() {
     setComments(updatedComments);
     setClickedDelete(false);
   }
+  if (clickedDelete) {
+    document.getElementById("root").classList.add("overflow-hidden");
+    document
+      .getElementsByClassName("delete-panel-container")[0]
+      ?.classList.add("overflow-hidden");
+    console.log(document.getElementsByClassName("delete-panel-container"));
+  }
 
   return (
     <>
@@ -231,7 +238,8 @@ function Comment({
     setClickedEdit(true);
   }
 
-  function handleUpdate() {
+  function handleUpdate(e) {
+    e.preventDefault();
     if (textAreaContent) {
       const updatedComment = { ...comment, content: textAreaContent };
       updateComments(updatedComment);

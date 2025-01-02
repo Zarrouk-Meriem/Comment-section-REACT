@@ -394,6 +394,9 @@ ion-icon:active {
 .horizontal-shaking {
   animation: horizontal-shaking 0.9s;
 }
+.overflow-hidden {
+  overflow: hidden;
+}
 //querries
 @media (max-width: 37.9375em) {
   .comment {
